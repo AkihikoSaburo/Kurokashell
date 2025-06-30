@@ -60,7 +60,7 @@ Item {
                 width: workspaceIcons.width
                 radius: 25
                 color: "transparent"
-                Layout.alignment: Qt.AlignBaseline
+                Layout.alignment: Qt.AlignHCenter
                 Rectangle {
                     id: workspaceIcons
                     color: "#41282B"
@@ -71,7 +71,7 @@ Item {
                     opacity: model.id === activeId ? 1 : 0
                 }
                 Services.MaterialIcon {
-                    property real targetScale: model.id === activeId ? 1.1 : 1.0
+                    property real targetScale: model.id === activeId ? 1.0 : 0.9
 
                     id: materialIcon
                     anchors.centerIn: parent
@@ -88,7 +88,7 @@ Item {
 
                     Component.onCompleted: {
                         if (model.id === activeId) {
-                            scaleAnim.to = 1.1
+                            scaleAnim.to = 1.0
                             scaleAnim.start()
                         } else {
                             scale = targetScale
@@ -111,13 +111,13 @@ Item {
 
                     onEntered: {
                         hoverAnim.stop()
-                        hoverAnim.to = 1.1
+                        hoverAnim.to = 1.0
                         hoverAnim.start()
                     }
 
                     onExited: {
                         hoverAnim.stop()
-                        hoverAnim.to = model.id === activeId ? 1.1 : 1.0
+                        hoverAnim.to = model.id === activeId ? 1.0 : 0.9
                         hoverAnim.start()
                     }
                     onClicked: Hyprland.dispatch(`workspace ${model.id}`);

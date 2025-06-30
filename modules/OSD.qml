@@ -1,22 +1,5 @@
 import QtQuick
 import Quickshell
-import "root:/components/Bar"
+import "root:/components/OSD"
 
-Variants {
-    model: Quickshell.screens
-
-    delegate: Component {
-        PanelWindow {
-            property var modelData
-
-            screen: modelData
-            color: "transparent"
-            anchors {
-                right: true
-            }
-
-            BarOSD {}
-
-        }  
-    }
-}
+OSDBar {}

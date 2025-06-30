@@ -29,6 +29,7 @@ Column {
             color: "transparent"
             height: 50
             anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
 
             MaterialIcon{
                 icon: "mode_off_on"
@@ -43,7 +44,7 @@ Column {
         }
         Rectangle {
             id: networkBattery
-            width: 45
+            width: 40
             height: 160
             radius: 25
             color: "#41282B"
@@ -52,8 +53,8 @@ Column {
             anchors.horizontalCenter: parent.horizontalCenter
             ColumnLayout {
                 anchors.fill: parent
-                spacing: 1
-                anchors.margins: 10
+                spacing: - 5
+                anchors.horizontalCenter: parent.horizontalCenter
 
                 MaterialIcon {
                     icon: "wifi"
@@ -61,6 +62,7 @@ Column {
                     color: "white"
                     implicitWidth: 24
                     implicitHeight: 24
+                    scale: 0.9
                 }
                MaterialIcon {
                     icon: "bluetooth"
@@ -68,6 +70,7 @@ Column {
                     color: "white"
                     implicitWidth: 24
                     implicitHeight: 24
+                    scale: 0.9
                 }
                 MaterialIcon {
                     icon: "battery_full"
@@ -75,6 +78,7 @@ Column {
                     color: "white"
                     implicitWidth: 24
                     implicitHeight: 24
+                    scale: 0.9
                 }
             }
         }
