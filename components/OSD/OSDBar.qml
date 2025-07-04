@@ -10,20 +10,17 @@ import "root:/services"
 Scope {
     id: root
 
-    PwObjectTracker {
-        objects: [ Pipewire.defaultAudioSink ]
-    }
+	required property ShellScreen screen
+	
 
     Connections {
-        target: Pipewire.defaultAudioSink?.audio
+        target: Audio
 
         function onVolumeChanged() {
             root.shouldShowOsd = true;
             hideTimer.restart();
         }
     }
-
-	property var targetMonitor: Brightness.monitors.length > 0 ? Brightness.monitors[0] : null
 
 	Connections {
     	target: targetMonitor
@@ -39,7 +36,11 @@ Scope {
         id: hideTimer
         interval: 2000
         onTriggered: root.shouldShowOsd = false
-    }
+	}
+
+	required property Brightness.Monitor monitor
+
+	monitor: Brightness.getMonitorForScreen(screen)
 
     LazyLoader {
         active: root.shouldShowOsd
@@ -56,7 +57,9 @@ Scope {
                 topLeftRadius: 25
                 bottomLeftRadius: 25
                 color: "#F8DAC6"
-                Column {
+                ColumnLayout {
+					id: columnRoot
+
                     anchors.centerIn: parent
 					spacing: 0
 					Rectangle {
@@ -65,48 +68,53 @@ Scope {
          			    implicitHeight: 250
         			    color: "transparent"
 						Layout.alignment: Qt.AlignHCenter
-						Slider {
-							id: volumeSlider
-							orientation: Qt.Vertical
-							Layout.alignment: Qt.AlignHCenter
+						Column {
+							Slider {
+								id: volumeSlider
+								orientation: Qt.Vertical
+								Layout.alignment: Qt.AlignHCenter
 
-							from: 0
-							to: 100
-							stepSize: 1
-
-							value: (Pipewire.defaultAudioSink?.audio.volume ?? 0) * 100
+								value: Audio.volume
                                 
-							implicitWidth: rootVolume.implicitWidth
-							implicitHeight: rootVolume.implicitHeight - 40
+								implicitWidth: rootVolume.implicitWidth
+								implicitHeight: rootVolume.implicitHeight - 40
 
-							background: Rectangle {
-								radius: 25
-								color: "#8041282B"
-								Rectangle {
-									anchors.left: parent.left
-									anchors.right: parent.right
-									y: volumeSlider.handle.y
-                                    implicitHeight: parent.height - y
-                                    radius: 25
-									color: "#41282B"
+								background: Rectangle {
+									radius: 25
+									color: "#8041282B"
+									Rectangle {
+										anchors.left: parent.left
+										anchors.right: parent.right
+										y: volumeSlider.handle.y
+                                    	implicitHeight: parent.height - y
+                                    	radius: 25
+										color: "#41282B"
+									}
 								}
-							}
 
-							handle: Rectangle {
-    							implicitHeight: 40
-    							implicitWidth: 40
-    							radius: 25
-    							x: volumeSlider.leftPadding + (volumeSlider.availableWidth - width) / 2
-    							y: (volumeSlider.topPadding + volumeSlider.visualPosition * (volumeSlider.availableHeight - height))
-    							color: "#FCEBDD"
+								handle: Rectangle {
+									id: volumeHandle
+    								implicitHeight: 40
+    								implicitWidth: 40
+    								radius: 25
+    								x: volumeSlider.leftPadding + (volumeSlider.availableWidth - width) / 2
+    								y: (volumeSlider.topPadding + volumeSlider.visualPosition * (volumeSlider.availableHeight - height))
+    								color: "#FCEBDD"
+								
+    								Text {
+										anchors.centerIn: parent
+										text: Math.round(volumeSlider.value * 100)
+									}
+								}
+								onMoved: Audio.setVolume(value)
 							}
-
-                            onValueChanged: {
-        						const vol = value / 100;
-        						if (Pipewire.defaultAudioSink) {
-            						Pipewire.defaultAudioSink.audio.volume = vol;
-        						}
-    						}
+							MaterialIcon {
+        						id: volumeIcon
+        						icon: "volume_up"
+        						anchors.left: parent.left
+								anchors.leftMargin: 4
+        						scale: 1.0
+							}
 						}
 					}
 					Rectangle {
@@ -115,50 +123,53 @@ Scope {
          			    implicitHeight: 250
         			    color: "transparent"
 						Layout.alignment: Qt.AlignHCenter
-						Slider {
-							id: brightnessSlider
-							orientation: Qt.Vertical
-							Layout.alignment: Qt.AlignHCenter
+						Column {
+							Slider {
+								id: brightnessSlider
+								orientation: Qt.Vertical
+								Layout.alignment: Qt.AlignHCenter
 
-							from: 0
-							to: 100
-							stepSize: 1
-
-							value: targetMonitor ? targetMonitor.brightness * 100 : 0
+								value: root.monitor?.brightness ?? 0
+								onMoved: root.monitor?.setBrightness(value)
                                 
-							implicitWidth: rootBrightness.implicitWidth
-							implicitHeight: rootBrightness.implicitHeight - 40
+								implicitWidth: rootBrightness.implicitWidth
+								implicitHeight: rootBrightness.implicitHeight - 40
 
-							background: Rectangle {
-								radius: 25
-								color: "#8041282B"
-								Rectangle {
-									anchors.left: parent.left
-									anchors.right: parent.right
-									y: brightnessSlider.handle.y
-                                    implicitHeight: parent.height - y
-                                    radius: 25
-									color: "#41282B"
+								background: Rectangle {
+									radius: 25
+									color: "#8041282B"
+									Rectangle {
+										anchors.left: parent.left
+										anchors.right: parent.right
+										y: brightnessSlider.handle.y
+                                    	implicitHeight: parent.height - y
+                                    	radius: 25
+										color: "#41282B"
+									}
+								}
+								handle: Rectangle {
+    								implicitHeight: 40
+    								implicitWidth: 40
+    								radius: 25
+    								x: brightnessSlider.leftPadding + (brightnessSlider.availableWidth - width) / 2
+    								y: (brightnessSlider.topPadding + brightnessSlider.visualPosition * (brightnessSlider.availableHeight - height))
+    								color: "#FCEBDD"
+									Text {
+										anchors.centerIn: parent
+										text: Math.round(brightnessSlider.value * 100)
+									}
 								}
 							}
-
-							handle: Rectangle {
-    							implicitHeight: 40
-    							implicitWidth: 40
-    							radius: 25
-    							x: brightnessSlider.leftPadding + (brightnessSlider.availableWidth - width) / 2
-    							y: (brightnessSlider.topPadding + brightnessSlider.visualPosition * (brightnessSlider.availableHeight - height))
-    							color: "#FCEBDD"
+							MaterialIcon {
+        						id: brightnessIcon
+								anchors.left: parent.left
+								anchors.leftMargin: 4
+        						icon: "brightness_7"
+        						scale: 1.0
 							}
-
-                            onValueChanged: {
-            					if (Brightness.monitors.length > 0) {
-                					Brightness.monitors[0].setBrightness(value / 100);
-            					}
-        					}
 						}
 					}
-                }
+				}
             }
         }
     }

@@ -75,8 +75,6 @@ Item {
 
                     id: materialIcon
                     anchors.centerIn: parent
-                    implicitWidth: 24
-                    implicitHeight: 24
                     color: model.id === activeId ? "white" : "black"
                     icon: model.id === activeId
                         ? "radio_button_checked"

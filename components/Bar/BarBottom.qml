@@ -33,8 +33,10 @@ Column {
 
             MaterialIcon{
                 icon: "mode_off_on"
-                anchors.fill: parent
+                anchors.horizontalCenter: parent.horizontalCenter
                 weight: 800
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 5
             }
 
             MouseArea {
@@ -60,24 +62,18 @@ Column {
                     icon: "wifi"
                     Layout.alignment: Qt.AlignHCenter
                     color: "white"
-                    implicitWidth: 24
-                    implicitHeight: 24
                     scale: 0.9
                 }
                MaterialIcon {
                     icon: "bluetooth"
                     Layout.alignment: Qt.AlignHCenter
                     color: "white"
-                    implicitWidth: 24
-                    implicitHeight: 24
                     scale: 0.9
                 }
                 MaterialIcon {
                     icon: "battery_full"
                     Layout.alignment: Qt.AlignHCenter
                     color: "white"
-                    implicitWidth: 24
-                    implicitHeight: 24
                     scale: 0.9
                 }
             }
