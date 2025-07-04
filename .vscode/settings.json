@@ -1,0 +1,5 @@
+{
+    "[qml]": {
+        "editor.defaultFormatter": "Delgan.qml-format"
+    }
+}
